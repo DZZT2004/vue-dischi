@@ -1,11 +1,15 @@
 <template>
     <div class="corpo">
       <div id="head">
+        {{inizializza()}}
         <FontAwesomeIcon icon="fa-brands fa-spotify" class="icona"/>
+        <genreOption
+        :genres-list="genresList"
+        @changedGenre="genreChange"/>
       </div>
       <div id="canzoni">
         <cartaCanzone
-          v-for="brano in arrMusic"
+          v-for="brano in arrayFiltrati"
           :branoInfo="brano"
           :key="brano.title"
         />
@@ -15,14 +19,44 @@
   
 <script>
 import cartaCanzone from '@/components/Card.vue'
+import genreOption from '@/components/Genre.vue'
 
 export default {
   name: 'corpoPage',
   components: {
     cartaCanzone,
+    genreOption
   },
   props: {
     arrMusic: Array,
+  },
+  data() {
+    return {
+      genresList: [],
+      arrayFiltrati: [],
+      genreFilter: 'all',
+    }
+  },
+  methods: {
+    genreChange(filtro) {
+      console.log(filtro)
+      this.arrayFiltrati = [];
+      this.genreFilter = filtro;
+      if(filtro != "all"){
+        this.arrMusic.forEach((item) =>{
+        if(item.genre == filtro){
+          this.arrayFiltrati.push(item);
+        }
+      })
+      }else{
+        this.arrayFiltrati = this.arrMusic;
+      }
+    },
+    inizializza(){
+      if(this.genreFilter == "all"){
+        this.arrayFiltrati = this.arrMusic;
+      }
+    }
   }
 }
 </script>
